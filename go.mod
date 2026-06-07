@@ -1,3 +1,3 @@
-module Choose_Your_Own_Adventure
+module github.com/umesshk/choose-your-adventure
 
 go 1.26.3
