@@ -11,6 +11,22 @@
     {{range .Paragraph}}
   <p>{{.}}</p>
     {{end}}
-    
+   
+    <br>
+    <br>
+    <br>
+    <ul>
+
+      <p>Options</p>
+      {{range .Options}}
+      <li>
+        <a href="/{{.Chapter}}">
+       
+        {{.Text}}
+        </a>
+        
+      </li>
+      {{end}}
+    </ul>
   </body>
 </html>
