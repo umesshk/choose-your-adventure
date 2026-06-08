@@ -3,9 +3,35 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/umesshk/choose-your-adventure/internal"
+	"html/template"
+	"log"
+	"net/http"
 	"os"
+
+	"github.com/umesshk/choose-your-adventure/internal"
 )
+
+func NewHandler(story internal.Story) http.Handler {
+	return handler{
+		story: story,
+	}
+}
+
+type handler struct {
+	story internal.Story
+}
+
+func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	tpl := template.Must(template.ParseFiles("web/index.html"))
+
+	err := tpl.Execute(w, h.story["intro"])
+
+	if err != nil {
+		fmt.Println("Error Occured ", err)
+		log.Fatal(err)
+	}
+
+}
 
 func main() {
 
@@ -26,7 +52,12 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Println(story)
+	mux := http.NewServeMux()
 
-	internal.ServerPage()
+	handler := NewHandler(story)
+
+	mux.HandleFunc("/", handler.ServeHTTP)
+	log.Println("Server Running on PORT 3000")
+	http.ListenAndServe(":3000", mux)
+
 }

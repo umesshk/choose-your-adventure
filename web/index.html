@@ -7,6 +7,10 @@
     <link href="css/style.css" rel="stylesheet">
   </head>
   <body>
-   <h1>Hello Guys Welcome to my page</h1> 
+    <h1> {{.Title}} </h1> 
+    {{range .Paragraph}}
+  <p>{{.}}</p>
+    {{end}}
+    
   </body>
 </html>
