@@ -36,6 +36,7 @@ func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func main() {
 
 	file_name := flag.String("json", "gopher.json", "Provide any valid JSON file containing CYOA story ")
+	port := flag.Int("port", 3000, "Provide port number for the application")
 	flag.Parse()
 
 	json_file, err := os.Open(*file_name)
@@ -57,7 +58,8 @@ func main() {
 	handler := NewHandler(story)
 
 	mux.HandleFunc("/", handler.ServeHTTP)
-	log.Println("Server Running on PORT 3000")
-	http.ListenAndServe(":3000", mux)
+
+	log.Printf(fmt.Sprintf("Server Running on PORT %d", *port))
+	http.ListenAndServe(fmt.Sprintf(":%d", *port), mux)
 
 }
