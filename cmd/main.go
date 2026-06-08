@@ -1,12 +1,10 @@
 package main
 
 import (
-	"encoding/json"
 	"flag"
 	"fmt"
+	"github.com/umesshk/choose-your-adventure/internal"
 	"os"
-
-	cyoa "github.com/umesshk/choose-your-adventure"
 )
 
 func main() {
@@ -21,14 +19,14 @@ func main() {
 		os.Exit(1)
 	}
 
-	d := json.NewDecoder(json_file)
+	story, err := internal.MakeStory(json_file)
 
-	var story cyoa.Story
-
-	if err := d.Decode(&story); err != nil {
-		fmt.Println("Error Decoding File ", err)
+	if err != nil {
+		fmt.Println("Error Occured : ", err)
 		os.Exit(1)
 	}
 
 	fmt.Println(story)
+
+	internal.ServerPage()
 }
