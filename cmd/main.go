@@ -7,8 +7,10 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path"
 	"strings"
 
+	"github.com/go-playground/locales/ur"
 	"github.com/umesshk/choose-your-adventure/internal"
 )
 
@@ -22,8 +24,14 @@ func WithTemplate(t *template.Template) HandlerOption {
 	}
 }
 
+func WithPath(fn func(*http.Request) string) HandlerOption {
+	return func(h *handler) {
+		h.pathFn = fn
+	}
+}
+
 func NewHandler(story internal.Story, opts ...HandlerOption) http.Handler {
-	h := handler{story, tpl}
+	h := handler{story, tpl, DefaultParseUrl}
 
 	for _, opt := range opts {
 		opt(&h)
@@ -33,28 +41,43 @@ func NewHandler(story internal.Story, opts ...HandlerOption) http.Handler {
 
 }
 
-type handler struct {
-	story internal.Story
-	t     *template.Template
+func pathFn(r *http.Request) string {
+
+	url_path := r.URL.Path
+
+	url_path = strings.TrimSpace(url_path)
+
+	if url_path == " " || url_path == "/" {
+		url_path = "/story/intro"
+	}
+
+	return url_path[len("/story/"):]
+
 }
 
-func (h handler) ParseUrl(url string) string {
+type handler struct {
+	story  internal.Story
+	t      *template.Template
+	pathFn func(*http.Request) string
+}
 
-	url = strings.Trim(url, "/")
+func DefaultParseUrl(r *http.Request) string {
 
-	if strings.HasPrefix(url, "css") || strings.HasPrefix(url, "favicon.ico") {
+	url_path := r.URL.Path
+
+	url_path = strings.Trim(url_path, "/")
+
+	if strings.HasPrefix(url_path, "css") || strings.HasPrefix(url_path, "favicon.ico") {
 		return ""
 	}
 
-	return url
+	return url_path
 
 }
 
 func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	url_path := r.URL.Path
-
-	story_arc := h.ParseUrl(url_path)
+	story_arc := h.pathFn(r)
 	var err error
 	if story_arc == "" {
 
@@ -96,6 +119,9 @@ func main() {
 
 	handler := NewHandler(story)
 
+	h := NewHandler(story, WithPath(pathFn))
+
+	mux.HandleFunc("/story", h.ServeHTTP)
 	mux.HandleFunc("/", handler.ServeHTTP)
 
 	log.Printf("Server Running on PORT %d", *port)
