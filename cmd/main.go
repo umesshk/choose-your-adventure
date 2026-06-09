@@ -7,10 +7,8 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"path"
 	"strings"
 
-	"github.com/go-playground/locales/ur"
 	"github.com/umesshk/choose-your-adventure/internal"
 )
 
@@ -47,11 +45,11 @@ func pathFn(r *http.Request) string {
 
 	url_path = strings.TrimSpace(url_path)
 
-	if url_path == " " || url_path == "/" {
-		url_path = "/story/intro"
+	if url_path == "/story" || url_path == "/story/" {
+		return "intro"
 	}
 
-	return url_path[len("/story/"):]
+	return strings.TrimPrefix(url_path, "/story/")
 
 }
 
