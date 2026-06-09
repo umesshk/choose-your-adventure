@@ -47,7 +47,9 @@ func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		err = tpl.Execute(w, h.story["intro"])
 	} else {
 
-		err = tpl.Execute(w, h.story[story_arc])
+		if chapter, ok := h.story[story_arc]; ok {
+			err = tpl.Execute(w, chapter)
+		}
 	}
 	if err != nil {
 		fmt.Println("Error Occured ", err)
