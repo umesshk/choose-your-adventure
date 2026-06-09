@@ -14,14 +14,28 @@ import (
 
 var tpl = template.Must(template.ParseFiles("web/index.html"))
 
-func NewHandler(story internal.Story) http.Handler {
-	return handler{
-		story: story,
+type HandlerOption func(*handler)
+
+func WithTemplate(t *template.Template) HandlerOption {
+	return func(h *handler) {
+		h.t = t
 	}
+}
+
+func NewHandler(story internal.Story, opts ...HandlerOption) http.Handler {
+	h := handler{story, tpl}
+
+	for _, opt := range opts {
+		opt(&h)
+	}
+
+	return h
+
 }
 
 type handler struct {
 	story internal.Story
+	t     *template.Template
 }
 
 func (h handler) ParseUrl(url string) string {
