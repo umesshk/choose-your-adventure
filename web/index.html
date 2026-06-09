@@ -4,16 +4,69 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Choose Your Own Story </title>
-    <link href="css/style.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
   </head>
+<style>
+
+  body , html{
+    margin: 0; 
+    padding :0; 
+    display: flex; 
+    justify-content: center; 
+    box-sizing: border-box; 
+  } 
+
+
+  h1{
+    color :green;
+    font-size: 50px; 
+    text-align :center; 
+    text-decoration: underline;
+  }
+
+  #main{
+    display: flex; 
+    flex-direction:column;
+    margin: 100px; 
+    gap:20px;
+    
+  }
+
+
+ #para {
+    
+  border : 2px solid black;
+  border-radius: 20px;
+  width: 950px; 
+  height: 850px;
+  padding: 20px;
+  font-size: 25px;
+
+}
+
+
+  a{
+  text-decoration : none;
+  color: blue;
+  }
+  
+
+
+</style>
+ 
+
   <body>
-    <h1> {{.Title}} </h1> 
+ <div id="main">
+    
+   
+    <div id="para">
+     
+    <h1 id="title"> {{.Title}} </h1> 
     {{range .Paragraph}}
   <p>{{.}}</p>
     {{end}}
    
-    <br>
-    <br>
+      
       {{if .Options}}
       <p>Options</p>
     <ul>
@@ -31,5 +84,7 @@
     {{else}}
     <p><strong>The End </strong></p>
     {{end}}
+   </div>
+    </div>
   </body>
 </html>
