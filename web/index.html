@@ -14,9 +14,10 @@
    
     <br>
     <br>
+      {{if .Options}}
+      <p>Options</p>
     <ul>
 
-      <p>Options</p>
       {{range .Options}}
       <li>
         <a href="/{{.Chapter}}">
@@ -27,5 +28,8 @@
       </li>
       {{end}}
     </ul>
+    {{else}}
+    <p><strong>The End </strong></p>
+    {{end}}
   </body>
 </html>
